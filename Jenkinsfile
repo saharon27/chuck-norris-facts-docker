@@ -30,7 +30,7 @@ pipeline {
                   - cat
                   tty: true
                   volumeMounts:
-                    - name:docker-sock
+                    - name: docker-sock
                       mountPath: '/var/run/docker.sock'
                 volumes:
                   - name: docker-sock
