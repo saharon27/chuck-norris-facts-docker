@@ -105,7 +105,7 @@ pipeline {
        }
      }
    }
- }
+ 
 /*  post {
       success {
           mail to: 'sharonisgizmo@yahoo.com',
