@@ -1,4 +1,4 @@
-# chuck-norris-facts-docker
+# Chuck Norris Jokes Docker
 
 Simple maven web app that shows an awasome Chuck Norris random jokes page based on chucknorris.io api.
 Docker image based on tomcat.
