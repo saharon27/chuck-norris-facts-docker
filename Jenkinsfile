@@ -71,7 +71,7 @@ pipeline {
       steps{
         container('docker') {
           echo "Creating Docker image..."
-          sh 'docker build -f DockerFile -t chuck-yanko:latest "chuck-yanko"'   
+          sh 'docker build -f DockerFile -t chuck-yanko:0.1.0 .'   
         }
       }
     }
@@ -81,8 +81,8 @@ pipeline {
           echo "Uploading Docker image to Nexus Repository..."
           withCredentials([usernamePassword(credentialsId: 'nexus_creds', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
             sh 'docker login -u $USER -p $PASSWORD nexus-docker.minikube'
-            sh 'docker image tag chuck-yanko:latest nexus-docker.minikube/chuck-yanko:latest'
-            sh 'docker push nexus-docker.minikube/chuck-yanko:latest'
+            sh 'docker image tag chuck-yanko:0.1.0 nexus-docker.minikube/chuck-yanko:0.1.0'
+            sh 'docker push nexus-docker.minikube/chuck-yanko:0.1.0'
             sh 'docker rmi -f $(docker images --filter=reference="nexus-docker.minikube/chuck-yanko*" -q)'
           }
         }   
