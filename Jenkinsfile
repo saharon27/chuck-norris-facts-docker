@@ -71,7 +71,7 @@ pipeline {
       steps{
         container('docker') {
           echo "Creating Docker image..."
-          sh 'docker build -f DockerFile -t chuck-yanko:latest "chuck-yanko" .'   
+          sh 'docker build -f DockerFile -t chuck-yanko:latest "chuck-yanko"'   
         }
       }
     }
