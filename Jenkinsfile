@@ -24,6 +24,14 @@ pipeline {
                   volumeMounts:
                     - name: docker-sock
                       mountPath: '/var/run/docker.sock'
+                - name: kubectl
+                  image: bitnami/kubectl
+                  command:
+                  - cat
+                  tty: true
+                  volumeMounts:
+                    - name:docker-sock
+                      mountPath: '/var/run/docker.sock'
                 volumes:
                   - name: docker-sock
                     hostPath:
@@ -86,6 +94,14 @@ pipeline {
             sh 'docker rmi -f $(docker images --filter=reference="nexus-docker.minikube/chuck-yanko*" -q)'
           }
         }   
+      }
+      stage('Deploy App') {
+        steps{
+          container('kubectl') {
+            echo "Deploying your app on cluster"
+            sh 'kubectl get pods'
+          }
+        }
       }
     }
   }
