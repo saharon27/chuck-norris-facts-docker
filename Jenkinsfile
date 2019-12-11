@@ -95,16 +95,17 @@ pipeline {
           }
         }   
       }
-      stage('Deploy App') {
-        steps{
-          container('kubectl') {
-            echo "Deploying your app on cluster"
-            sh 'kubectl get pods'
-          }
-        }
-      }
     }
-  }
+    stage('Deploy App') {
+      steps{
+        container('kubectl') {
+          echo "Deploying your app on cluster"
+          sh 'kubectl get pods'
+         }
+       }
+     }
+   }
+ }
 /*  post {
       success {
           mail to: 'sharonisgizmo@yahoo.com',
