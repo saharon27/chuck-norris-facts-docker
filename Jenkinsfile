@@ -101,7 +101,9 @@ pipeline {
         container('helm') {
           https://github.com/saharon27/helm-charts.git
           echo "Deploying your app on cluster"
-          sh 'helm ls'
+          sh 'helm repo add myhelmrepo https://saharon27.github.io/helm-charts/'
+          sh 'helm repo update'
+          sh 'helm install chucknorris myhelmrepo/chuckjokes'
          }
        }
      }
