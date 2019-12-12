@@ -24,8 +24,8 @@ pipeline {
                   volumeMounts:
                     - name: docker-sock
                       mountPath: '/var/run/docker.sock'
-                - name: kubectl
-                  image: bitnami/kubectl
+                - name: helm
+                  image: dtzar/helm-kubectl
                   command:
                   - cat
                   tty: true
@@ -98,9 +98,12 @@ pipeline {
     }
     stage('Deploy App') {
       steps{
-        container('kubectl') {
+        container('helm') {
+          https://github.com/saharon27/helm-charts.git
           echo "Deploying your app on cluster"
-          sh 'kubectl get pods'
+          sh 'helm repo add myhelmrepo https://saharon27.github.io/helm-charts/'
+          sh 'helm repo update'
+          sh 'helm install chucknorris myhelmrepo/chuckjokes'
          }
        }
      }
