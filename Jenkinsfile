@@ -24,6 +24,14 @@ pipeline {
                   volumeMounts:
                     - name: docker-sock
                       mountPath: '/var/run/docker.sock'
+                - name: kubectl
+                  image: bitnami/kubectl
+                  command:
+                  - cat
+                  tty: true
+                  volumeMounts:
+                    - name: docker-sock
+                      mountPath: '/var/run/docker.sock'
                 volumes:
                   - name: docker-sock
                     hostPath:
@@ -64,14 +72,14 @@ pipeline {
     stage('Publish war file to Nexus') {
       steps{
         echo "Publish war file to Nexus Maven-Releases repository..."
-        nexusPublisher nexusInstanceId: 'nexus_server', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: 'war', filePath: '/home/jenkins/agent/workspace/Chuck_Norris/web/target/chuck-yanko.war']], mavenCoordinate: [artifactId: 'chuck-yanko', groupId: 'ChuckGroup', packaging: 'war', version: '0.1.0']]]      
+        nexusPublisher nexusInstanceId: 'nexus_server', nexusRepositoryId: 'maven-releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: 'war', filePath: '/home/jenkins/agent/workspace/Chuck_Norris/target/chuck-yanko.war']], mavenCoordinate: [artifactId: 'chuck-yanko', groupId: 'ChuckGroup', packaging: 'war', version: '0.1.0']]]      
       }
     }
     stage('Dockerize App') {
       steps{
         container('docker') {
           echo "Creating Docker image..."
-          sh 'docker build -f DockerFile -t chuck-yanko:latest "chuck-yanko" .'   
+          sh 'docker build -f DockerFile -t chuck-yanko:0.1.0 .'   
         }
       }
     }
@@ -81,14 +89,23 @@ pipeline {
           echo "Uploading Docker image to Nexus Repository..."
           withCredentials([usernamePassword(credentialsId: 'nexus_creds', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
             sh 'docker login -u $USER -p $PASSWORD nexus-docker.minikube'
-            sh 'docker image tag chuck-yanko:latest nexus-docker.minikube/chuck-yanko:latest'
-            sh 'docker push nexus-docker.minikube/chuck-yanko:latest'
+            sh 'docker image tag chuck-yanko:0.1.0 nexus-docker.minikube/chuck-yanko:0.1.0'
+            sh 'docker push nexus-docker.minikube/chuck-yanko:0.1.0'
             sh 'docker rmi -f $(docker images --filter=reference="nexus-docker.minikube/chuck-yanko*" -q)'
           }
         }   
       }
     }
-  }
+    stage('Deploy App') {
+      steps{
+        container('kubectl') {
+          echo "Deploying your app on cluster"
+          sh 'kubectl get pods'
+         }
+       }
+     }
+   }
+ 
 /*  post {
       success {
           mail to: 'sharonisgizmo@yahoo.com',
