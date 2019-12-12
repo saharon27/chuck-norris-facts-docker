@@ -127,6 +127,7 @@ master:
     - job-dsl:1.76
     - nexus-jenkins-plugin:3.8.20191204-084645.a4bff16
     - sonar:2.10
+    - blueocean:1.21.0
 
   enableRawHtmlMarkupFormatter: false
   scriptApproval: []
